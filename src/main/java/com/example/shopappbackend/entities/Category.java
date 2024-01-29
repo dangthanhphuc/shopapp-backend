@@ -20,7 +20,6 @@ public class Category extends BaseEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotEmpty(message = "Category name is not empty")
     @Column(name = "name", nullable = false)
     private String name;
 

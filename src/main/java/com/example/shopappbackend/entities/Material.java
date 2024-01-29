@@ -12,16 +12,14 @@ import lombok.*;
 @AllArgsConstructor
 @Entity
 @Table(name = "materials")
-public class Material {
+public class Material extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotEmpty(message = "Material name is not empty")
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "is_deleted", nullable = false)
-    private boolean isDeleted = false;
+
 
 }

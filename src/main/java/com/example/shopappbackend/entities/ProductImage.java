@@ -12,18 +12,14 @@ import lombok.*;
 @Setter
 @Entity
 @Table(name = "product_images")
-public class ProductImage {
+public class ProductImage extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotEmpty(message = "Image url can not be empty")
     @Column(name = "image_url", nullable = false)
     private String imageUrl;
 
-
-    @Column(name = "is_deleted" , nullable = false)
-    private boolean isDeleted = false;
 
     @ManyToOne
     @JoinColumn(name = "product_id")

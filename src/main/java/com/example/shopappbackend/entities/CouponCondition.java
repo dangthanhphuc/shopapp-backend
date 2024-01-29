@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 @Setter
 @Entity
 @Table(name = "coupon_conditions")
-public class CouponCondition {
+public class CouponCondition extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,9 +30,6 @@ public class CouponCondition {
 
     @Column(name = "discount_amount", nullable = false)
     private BigDecimal discountAmount;
-
-    @Column(name = "is_deleted", nullable = false)
-    private boolean isDeleted;
 
     @ManyToOne
     @JoinColumn(name = "coupon_id")

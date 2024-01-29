@@ -14,7 +14,7 @@ import lombok.experimental.SuperBuilder;
 @Setter
 @Entity
 @Table(name = "products")
-public class Product {
+public class Product extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,8 +27,6 @@ public class Product {
     @Column(name = "unit_price", nullable = false)
     private float unitPrice;
 
-    @Column(name = "is_deleted" , nullable = false)
-    private boolean isDeleted = false;
 
     @ManyToOne
     @JoinColumn(name = "material_id")
