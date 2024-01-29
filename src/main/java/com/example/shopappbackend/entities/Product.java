@@ -24,7 +24,6 @@ public class Product {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @NotNull(message = "Unit price can not be null")
     @Column(name = "unit_price", nullable = false)
     private float unitPrice;
 

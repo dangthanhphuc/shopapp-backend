@@ -2,7 +2,10 @@ package com.example.shopappbackend.entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.PrePersist;
 import lombok.*;
+
+import java.time.LocalDateTime;
 
 @ToString
 @Getter
@@ -13,5 +16,10 @@ import lombok.*;
 public class BaseEntity {
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted;
+
+    @PrePersist
+    protected void onCreate() {
+        isDeleted = false;
+    }
 
 }
