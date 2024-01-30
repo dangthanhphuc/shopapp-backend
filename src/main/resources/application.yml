@@ -9,7 +9,7 @@ spring:
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: create #ch? n�y m� s?a th�nh drop-create th� r?t nguy
+      ddl-auto: create-drop #ch? n�y m� s?a th�nh drop-create th� r?t nguy
       #ddl-auto: validate
       #Hibernate s? kh�ng t?o, s?a ??i ho?c x�a b?t k? b?ng, c?t hay r�ng bu?c n�o trong c? s? d? li?u
       #validate th??ng ???c s? d?ng trong m�i tr??ng production
@@ -27,3 +27,6 @@ spring:
       basename: i18n/messages
       encoding: UTF-8
       default-locale: en
+
+api:
+  prefix: /api/v1
