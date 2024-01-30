@@ -17,13 +17,14 @@ import java.util.Date;
 public class BaseEntity {
 
     @Column(name = "is_deleted", nullable = false)
-    private boolean isDeleted = false;
+    private boolean isDeleted;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
     @PrePersist
     public void onCreateAt() {
+        isDeleted = false;
         createdAt = LocalDateTime.now();
     }
 }
