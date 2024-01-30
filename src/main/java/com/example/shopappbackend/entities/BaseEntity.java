@@ -6,6 +6,7 @@ import jakarta.persistence.PrePersist;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @ToString
 @Getter
@@ -14,12 +15,15 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @MappedSuperclass
 public class BaseEntity {
+
     @Column(name = "is_deleted", nullable = false)
-    private boolean isDeleted;
+    private boolean isDeleted = false;
+
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
 
     @PrePersist
-    protected void onCreate() {
-        isDeleted = false;
+    public void onCreateAt() {
+        createdAt = LocalDateTime.now();
     }
-
 }

@@ -17,9 +17,6 @@ public class Order extends BaseEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "order_date")
-    private Date orderDate;
-
     @Column(name = "total")
     private Long total;
 
