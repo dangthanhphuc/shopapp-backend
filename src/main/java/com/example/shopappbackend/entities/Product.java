@@ -24,9 +24,11 @@ public class Product extends BaseEntity{
     @Column(name = "name", nullable = false)
     private String name;
 
+    @Column(name = "description")
+    private String description;
+
     @Column(name = "unit_price", nullable = false)
     private float unitPrice;
-
 
     @ManyToOne
     @JoinColumn(name = "material_id")

@@ -16,13 +16,13 @@ spring:
       #N?u c� s? kh�c bi?t gi?a c?u tr�c c? s? d? li?u v� c�c entity class
       #l?i s? ???c hi?n th? v� y�u c?u s?a ??i c?u tr�c c? s? d? li?u m?t c�ch th? c�ng
     properties:
-      hibernate:
+      hibernate: true
       dialect: org.hibernate.dialect.MySQL8Dialect
       format_sql: true
-    servlet:
-      multipart:
-        max-file-size: 10MB
-        max-request-size: 10MB
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
     messages:
       basename: i18n/messages
       encoding: UTF-8

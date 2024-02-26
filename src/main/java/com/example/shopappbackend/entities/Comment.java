@@ -3,6 +3,8 @@ package com.example.shopappbackend.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -11,6 +13,7 @@ import lombok.*;
 @Entity
 @Table(name = "comments")
 public class Comment extends BaseEntity{
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

@@ -7,6 +7,7 @@ import com.example.shopappbackend.repositories.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,21 +26,23 @@ public class CategoryService implements ICategoryService{
     }
 
     @Override
-    public Category updateCategory(long id, CategoryDTO categoryDTO) throws DataNotFoundException {
+    public void updateCategory(long id, CategoryDTO categoryDTO) throws DataNotFoundException {
         Category category = categoryRepository.findById(id).orElseThrow(
                 () -> new DataNotFoundException("Category not found")
         );
         category.setName(categoryDTO.getName());
-        return categoryRepository.save(category);
+        category.setUpdatedAt(LocalDateTime.now());
+        categoryRepository.save(category);
     }
 
     @Override
-    public Category deleteCategoryById(long id) throws DataNotFoundException {
+    public void deleteCategoryById(long id) throws DataNotFoundException {
         Category category = categoryRepository.findById(id).orElseThrow(
                 () -> new DataNotFoundException("Category not found")
         );
         category.setDeleted(true);
-        return categoryRepository.save(category);
+        category.setUpdatedAt(LocalDateTime.now());
+        categoryRepository.save(category);
     }
 
     @Override

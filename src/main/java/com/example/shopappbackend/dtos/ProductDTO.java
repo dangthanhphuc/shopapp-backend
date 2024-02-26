@@ -17,6 +17,9 @@ public class ProductDTO {
     @NotEmpty(message = "Product name can not be empty")
     private String name;
 
+    @JsonProperty("description")
+    private String description;
+
     @JsonProperty("unit_price")
     @Min(value  = 1 , message = "Unit price can not be negative")
     private float unitPrice;

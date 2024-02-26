@@ -1,5 +1,6 @@
 package com.example.shopappbackend.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,6 +19,9 @@ public class OrderDetail extends BaseEntity{
     @Column(name = "number_of_products", nullable = false)
     private int numberOfProducts;
 
+    @Column(name = "unit_price")
+    private float unitPrice;
+
     @Column(name = "total_amount", nullable = false)
     private float totalAmount;
 
@@ -27,6 +31,7 @@ public class OrderDetail extends BaseEntity{
 
     @ManyToOne
     @JoinColumn(name = "order_id")
+    @JsonBackReference
     private Order order;
 
 }

@@ -6,6 +6,7 @@ import com.example.shopappbackend.entities.Category;
 import com.example.shopappbackend.exceptions.DataNotFoundException;
 import com.example.shopappbackend.responses.category.CategoryResponse;
 import com.example.shopappbackend.services.category.CategoryService;
+import com.example.shopappbackend.services.category.ICategoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("${api.prefix}/categories")
 public class CategoryController {
-    private final CategoryService categoryService;
+    private final ICategoryService categoryService;
     @PostMapping("")
     public ResponseEntity<CategoryResponse> createCategory(
             @Valid @RequestBody CategoryDTO categoryDTO,
