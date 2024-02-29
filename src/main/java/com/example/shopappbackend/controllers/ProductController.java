@@ -8,6 +8,7 @@ import com.example.shopappbackend.responses.product.ProductResponse;
 import com.example.shopappbackend.services.product.IProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,8 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -146,8 +149,29 @@ public class ProductController {
         }
     }
 
+    @GetMapping("/image/{imageName}")
+    public ResponseEntity<?> viewImage(
+            @PathVariable String imageName
+    ){
+        try{
+            Path imagePath = Paths.get("uploads/" + imageName); // Path của folder upload
+            UrlResource urlResource = new UrlResource(imagePath.toUri()); // Lấy Url nguồn tới file hiêện tại (VD: C://... + imagePath)
+
+            if(urlResource.exists()){
+                return ResponseEntity.ok()
+                        .contentType(MediaType.IMAGE_JPEG)
+                        .body(urlResource);
+            } else{
+                return ResponseEntity.ok()
+                        .contentType(MediaType.IMAGE_JPEG)
+                        .body(new UrlResource(Paths.get("uploads/notfound.jpg").toUri()));
+            }
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     // Chức năng chưa xử lý
-    //viewImage
     //generateFakeProducts
 
 }

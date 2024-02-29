@@ -8,6 +8,7 @@ import com.example.shopappbackend.services.comment.ICommentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +21,7 @@ import java.util.List;
 public class CommentController {
     private final ICommentService commentService;
     @PostMapping("")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     public ResponseEntity<?> createComment(
             @Valid @RequestBody CommentDTO commentDTO,
             BindingResult result
@@ -39,6 +41,7 @@ public class CommentController {
     }
 
     @PutMapping("/update/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     public ResponseEntity<?> updateComment(
             @PathVariable("id") Long commentId,
             @Valid @RequestBody CommentDTO commentDTO,
@@ -59,6 +62,7 @@ public class CommentController {
     }
 
     @PutMapping("/delete/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     public ResponseEntity<String> deleteComment(@PathVariable("id") Long commentId){
         try {
             commentService.deleteCommentById(commentId);

@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface ICouponService {
     Coupon getCouponByCode(String code) throws DataNotFoundException;
-
+    double calculateCouponValue(String couponCode, double totalAmount) throws DataNotFoundException;
     List<Coupon> getCoupons();
 }

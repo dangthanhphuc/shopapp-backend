@@ -10,8 +10,7 @@ public interface IUserService {
     List<User> getUsers() throws DataNotFoundException;
     User createUser(UserDTO userDTO) throws DataNotFoundException;
     User updateUserDetails(Long userId ,UserDTO userDTO) throws DataNotFoundException;
-
     void unableOrEnabledUser(Long userId, boolean isUnable) throws DataNotFoundException;
-
     User getUser(Long userId) throws DataNotFoundException;
+    String login(String email, String password) throws DataNotFoundException;
 }

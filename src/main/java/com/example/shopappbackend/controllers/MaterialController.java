@@ -7,6 +7,7 @@ import com.example.shopappbackend.services.material.MaterialService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,7 @@ public class MaterialController {
     private final MaterialService materialService;
 
     @PostMapping("")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<MaterialResponse> createMaterial(
             @Valid @RequestBody MaterialDTO materialDTO,
             BindingResult result
@@ -42,6 +44,7 @@ public class MaterialController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<String> updateMaterial(
             @PathVariable Long id,
             @RequestBody MaterialDTO materialDTO
@@ -55,6 +58,7 @@ public class MaterialController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<String> deleteMaterial(
             @PathVariable Long id
     ){

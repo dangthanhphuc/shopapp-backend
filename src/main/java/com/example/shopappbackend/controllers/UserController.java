@@ -1,6 +1,7 @@
 package com.example.shopappbackend.controllers;
 
 import com.example.shopappbackend.dtos.UserDTO;
+import com.example.shopappbackend.dtos.UserLoginDTO;
 import com.example.shopappbackend.entities.User;
 import com.example.shopappbackend.exceptions.DataNotFoundException;
 import com.example.shopappbackend.responses.user.UserResponse;
@@ -89,5 +90,20 @@ public class UserController {
         }
     }
 
-
+    // Test
+    @PostMapping("/login")
+    public ResponseEntity<String> login(
+            @Valid @RequestBody UserLoginDTO userLoginDTO,
+            BindingResult result
+    ){
+        try{
+            if(result.hasErrors()){
+                return ResponseEntity.badRequest().body("Login failed");
+            }
+            String token = userService.login(userLoginDTO.getEmail(), userLoginDTO.getPassword());
+            return ResponseEntity.ok(token);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }

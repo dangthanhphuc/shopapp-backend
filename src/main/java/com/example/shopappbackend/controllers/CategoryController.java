@@ -10,6 +10,7 @@ import com.example.shopappbackend.services.category.ICategoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 public class CategoryController {
     private final ICategoryService categoryService;
     @PostMapping("")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<CategoryResponse> createCategory(
             @Valid @RequestBody CategoryDTO categoryDTO,
             BindingResult result
@@ -44,6 +46,7 @@ public class CategoryController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<String> updateCategory(
             @PathVariable Long id,
             @RequestBody CategoryDTO categoryDTO
@@ -57,6 +60,7 @@ public class CategoryController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<String> deleteCategory(
             @PathVariable Long id
     ){
@@ -80,9 +84,8 @@ public class CategoryController {
     }
 
     @GetMapping("")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<List<Category>> getAllCategories(
-            @RequestParam("page") int page,
-            @RequestParam("limit") int limit
     ) {
         List<Category> categories = categoryService.getAllCategories();
         return ResponseEntity.ok(categories);

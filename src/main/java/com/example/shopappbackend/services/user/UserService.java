@@ -1,5 +1,6 @@
 package com.example.shopappbackend.services.user;
 
+import com.example.shopappbackend.components.JwtTokenUtils;
 import com.example.shopappbackend.dtos.UserDTO;
 import com.example.shopappbackend.entities.Role;
 import com.example.shopappbackend.entities.User;
@@ -11,15 +12,23 @@ import com.example.shopappbackend.services.role.RoleService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
 public class UserService implements IUserService {
     private final UserRepository userRepository;
     private final RoleService roleService;
+    private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
+    private final JwtTokenUtils jwtTokenUtil;
 
     private final ModelMapper modelMapper;
 
@@ -41,6 +50,9 @@ public class UserService implements IUserService {
 
         User newUser = new User();
         modelMapper.map(userDTO, newUser);
+
+        String encodedPassword = passwordEncoder.encode(userDTO.getPassword());
+        newUser.setPassword(encodedPassword);
 
         // Lấy Role USER làm mặc định
         Role role = roleService.getRoleById(2L);
@@ -67,9 +79,34 @@ public class UserService implements IUserService {
     }
 
     @Override
+    public String login(String email, String password) throws DataNotFoundException {
+        // Check email
+        Optional<User> optionalUser = userRepository.findByEmail(email);
+
+        if( optionalUser.isEmpty() ){
+            throw new DataNotFoundException("Not found user with " + email);
+        }
+
+        User existingUser = optionalUser.get();
+
+        if(!passwordEncoder.matches(password, existingUser.getPassword())) {
+            throw new BadCredentialsException("Wrong email or password.");
+        }
+
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                email, password, existingUser.getAuthorities()
+        );
+
+        authenticationManager.authenticate(authenticationToken);
+
+        return jwtTokenUtil.generateToken(existingUser);
+    }
+
+    @Override
     public User getUser(Long userId) throws DataNotFoundException {
         return getUserById(userId);
     }
+
 
     public User getUserById(long id) throws DataNotFoundException {
         return userRepository.findById(id).stream()

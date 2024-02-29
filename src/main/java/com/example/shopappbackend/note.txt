@@ -20,6 +20,6 @@ Khi bạn chuyển đổi một đối tượng Author thành JSON, thông tin v
 và ngược lại khi chuyển đổi một đối tượng Book thành JSON, thông tin về tác giả (author) vẫn được bao gồm.
 Điều này giúp tránh vòng lặp khi chuyển đổi JSON giữa Author và Book.
 
-* Chưa xử lý coupon
+
 * Chưa xử lý kỹ Category và Material
 * Kiểm tra @Transaction(rollBackOn = Exception.class) có hoạt động không test bằng vòng lặp thêm vào
