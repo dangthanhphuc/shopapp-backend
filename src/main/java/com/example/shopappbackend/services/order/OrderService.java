@@ -8,6 +8,7 @@ import com.example.shopappbackend.repositories.OrderDetailRepository;
 import com.example.shopappbackend.repositories.OrderRepository;
 import com.example.shopappbackend.repositories.UserRepository;
 import com.example.shopappbackend.services.coupon.ICouponService;
+import com.example.shopappbackend.services.orderdetail.IOrderDetailService;
 import com.example.shopappbackend.services.product.IProductService;
 import com.example.shopappbackend.services.user.IUserService;
 import lombok.RequiredArgsConstructor;
@@ -49,7 +50,7 @@ public class OrderService implements IOrderService{
         return orders;
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public Order createOrder(OrderDTO orderDTO) throws DataNotFoundException {
         // Kiểm tra sự tồn tại của user
@@ -110,8 +111,23 @@ public class OrderService implements IOrderService{
                 .addMappings(mapper -> mapper.skip(Order::setId));
         // Cập nhật các trường của đơn hàng từ orderDTO
         modelMapper.map(orderDTO, existingOrder);
+
         existingOrder.setUser(existingUser);
-        // Chưa xử lý List<CartItemDTO> khi sửa order
+
+        // Kiểm tra coupon
+        if(orderDTO.getCouponCode() != null){
+            try{
+                Coupon existingCoupon = couponService.getCouponByCode(orderDTO.getCouponCode());
+                existingOrder.setCoupon(existingCoupon);
+            }catch(Exception e) {
+                existingOrder.setCoupon(null);
+            }
+        }
+
+//        for (Long orderDetailId : existingOrder.getOrderDetails().stream().map(OrderDetail::getId).toList()){
+//            orderDetailRepository.deleteById(orderDetailId);
+//        }
+
         return orderRepository.save(existingOrder);
     }
 

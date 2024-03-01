@@ -13,4 +13,5 @@ public interface IUserService {
     void unableOrEnabledUser(Long userId, boolean isUnable) throws DataNotFoundException;
     User getUser(Long userId) throws DataNotFoundException;
     String login(String email, String password) throws DataNotFoundException;
+    User getUserDetailsFromToken(String token) throws DataNotFoundException;
 }

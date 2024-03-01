@@ -171,7 +171,7 @@ public class ProductController {
         }
     }
 
-    // Chức năng chưa xử lý
+    // Chức năng chưa xử lý (chưa hiểu)
     //generateFakeProducts
 
 }

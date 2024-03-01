@@ -97,7 +97,9 @@ public class JwtTokenFilter extends OncePerRequestFilter { // Dùng để kiểm
                 Pair.of(String.format("%s/users/login", apiPrefix),"GET")
 
                 ,Pair.of(String.format("%s/users**", apiPrefix),"POST"),
-                Pair.of(String.format("%s/products/image**", apiPrefix),"GET")
+                Pair.of(String.format("%s/products/image**", apiPrefix),"GET"),
+                Pair.of(String.format("%s/orders**", apiPrefix),"POST"),
+                Pair.of(String.format("%s/orders**", apiPrefix), "PUT")
         );
 
         for (Pair<String, String>  pair : byPassToken) {

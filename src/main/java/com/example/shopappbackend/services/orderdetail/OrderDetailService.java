@@ -9,10 +9,12 @@ import com.example.shopappbackend.repositories.OrderDetailRepository;
 import com.example.shopappbackend.services.order.IOrderService;
 import com.example.shopappbackend.services.order.OrderService;
 import com.example.shopappbackend.services.product.IProductService;
-import jakarta.transaction.Transactional;
+
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 
 import java.util.List;
 
@@ -36,7 +38,7 @@ public class OrderDetailService implements IOrderDetailService{
         return orderDetail;
     }
 
-    @Transactional(rollbackOn = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public OrderDetail createOrderDetail(OrderDetailDTO orderDetailDTO) throws DataNotFoundException {
         Order existingOrder = orderService.getOrderById(orderDetailDTO.getOrderId());
@@ -53,7 +55,7 @@ public class OrderDetailService implements IOrderDetailService{
         return orderDetailRepository.save(orderDetail);
     }
 
-    @Transactional(rollbackOn = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public OrderDetail updateOrderDetail(Long id, OrderDetailDTO orderDetailDTO) throws DataNotFoundException {
         OrderDetail existingOrderDetail = findOrderDetail(id);
@@ -70,12 +72,14 @@ public class OrderDetailService implements IOrderDetailService{
         return orderDetailRepository.save(existingOrderDetail);
     }
 
-    @Transactional(rollbackOn = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void deleteOrderDetail(Long id) throws DataNotFoundException {
         OrderDetail existingOrderDetail = findOrderDetail(id);
         orderDetailRepository.deleteById(id);
     }
+
+
 
     private OrderDetail findOrderDetail(Long id) throws DataNotFoundException {
         return orderDetailRepository.findById(id)

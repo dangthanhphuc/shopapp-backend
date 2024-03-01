@@ -1,6 +1,8 @@
 package com.example.shopappbackend.components;
 
+import com.example.shopappbackend.entities.Token;
 import com.example.shopappbackend.entities.User;
+import com.example.shopappbackend.repositories.TokenRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -19,6 +21,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class JwtTokenUtils {
@@ -27,6 +30,8 @@ public class JwtTokenUtils {
 
     @Value("${jwt.secretKey}")
     private String secretKey;
+
+    private final TokenRepository tokenRepository;
 
     public String generateToken(User user){
         Map<String, Object> claims = new HashMap<>();
@@ -84,36 +89,30 @@ public class JwtTokenUtils {
         return expiration.before(new Date());
     }
 
-    // Chưa xử lý validateToken
-//    public boolean validateToken(String token, User userDetails) {
-//        try {
-//            String phoneNumber = extractPhoneNumber(token);
-//            Token existingToken = tokenRepository.findByToken(token);
-//            if(existingToken == null ||
-//                    existingToken.isRevoked() == true ||
-//                    !userDetails.isActive()
-//            ) {
-//                return false;
-//            }
-//            return (phoneNumber.equals(userDetails.getUsername()))
-//                    && !isTokenExpired(token);
-//        } catch (MalformedJwtException e) {
-//            logger.error("Invalid JWT token: {}", e.getMessage());
-//        } catch (ExpiredJwtException e) {
-//            logger.error("JWT token is expired: {}", e.getMessage());
-//        } catch (UnsupportedJwtException e) {
-//            logger.error("JWT token is unsupported: {}", e.getMessage());
-//        } catch (IllegalArgumentException e) {
-//            logger.error("JWT claims string is empty: {}", e.getMessage());
-//        }
-//
-//        return false;
-//    }
 
-    public boolean validateToken(String token, UserDetails userDetails) {
-        final String email = getEmailFromToken(token);
-        return email.equals(userDetails.getUsername()) // Email từ token có giống với email từ UserDetails không
-                && !isTokenExpired(token); // Kiểm tra token còn hạn sử dụng không
+    public boolean validateToken(String token, User userDetails) {
+        try {
+            String email = getEmailFromToken(token);
+            Token existingToken = tokenRepository.findByToken(token);
+            if(existingToken == null ||
+                    existingToken.isRevoked() ||
+                    !userDetails.isDeleted()
+            ) {
+                return false;
+            }
+            return (email.equals(userDetails.getUsername()))
+                    && !isTokenExpired(token);
+        } catch (MalformedJwtException e) {
+            log.error("Invalid JWT token: {}", e.getMessage());
+        } catch (ExpiredJwtException e) {
+            log.error("JWT token is expired: {}", e.getMessage());
+        } catch (UnsupportedJwtException e) {
+            log.error("JWT token is unsupported: {}", e.getMessage());
+        } catch (IllegalArgumentException e) {
+            log.error("JWT claims string is empty: {}", e.getMessage());
+        }
 
+        return false;
     }
+
 }

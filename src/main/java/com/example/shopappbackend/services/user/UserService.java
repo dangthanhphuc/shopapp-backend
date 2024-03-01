@@ -103,6 +103,16 @@ public class UserService implements IUserService {
     }
 
     @Override
+    public User getUserDetailsFromToken(String token) throws DataNotFoundException {
+        String email = jwtTokenUtil.getEmailFromToken(token);
+        User existingUser = userRepository.findByEmail(email)
+                .orElseThrow(
+                        () -> new DataNotFoundException("User not found")
+                );
+        return existingUser;
+    }
+
+    @Override
     public User getUser(Long userId) throws DataNotFoundException {
         return getUserById(userId);
     }

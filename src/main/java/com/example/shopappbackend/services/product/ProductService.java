@@ -10,13 +10,13 @@ import com.example.shopappbackend.repositories.CategoryRepository;
 import com.example.shopappbackend.repositories.MaterialRepository;
 import com.example.shopappbackend.repositories.ProductImageRepository;
 import com.example.shopappbackend.repositories.ProductRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -111,7 +111,7 @@ public class ProductService implements IProductService{
                 );
     }
 
-    @Transactional(rollbackOn = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public ProductImage createProductImage(Long id, MultipartFile file) throws DataNotFoundException, IOException {
 

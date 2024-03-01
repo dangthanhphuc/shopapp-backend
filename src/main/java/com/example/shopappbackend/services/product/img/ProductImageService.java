@@ -6,9 +6,9 @@ import com.example.shopappbackend.entities.ProductImage;
 import com.example.shopappbackend.exceptions.DataNotFoundException;
 import com.example.shopappbackend.repositories.ProductImageRepository;
 import com.example.shopappbackend.services.product.ProductService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,7 +27,7 @@ import java.util.UUID;
 public class ProductImageService implements IProductImageService{
     private final ProductImageRepository productImageRepository;
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public ProductImage deleteProductImage(Long id) throws DataNotFoundException {
         ProductImage existingProductImage = getProductById(id);
         existingProductImage.setDeleted(true);
