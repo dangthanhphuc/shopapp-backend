@@ -9,6 +9,7 @@ import com.example.shopappbackend.services.orderdetail.IOrderDetailService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 public class OrderDetailController {
     private final IOrderDetailService orderDetailService;
     @PostMapping("")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     public ResponseEntity<?> createOrderDetail(
             @Valid @RequestBody OrderDetailDTO orderDetailDTO,
             BindingResult result
@@ -43,6 +45,7 @@ public class OrderDetailController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     public ResponseEntity<?> getOrderDetail(
             @Valid @PathVariable Long id
     ) {
@@ -55,6 +58,7 @@ public class OrderDetailController {
     }
 
     @GetMapping("/order/{orderId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     public ResponseEntity<?> getOrderDetailsByOrderId(
             @Valid @PathVariable("orderId") Long orderId
     ) {
@@ -70,6 +74,7 @@ public class OrderDetailController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     public ResponseEntity<?> updateOrderDetail(
             @Valid @PathVariable Long id,
             @Valid @RequestBody OrderDetailDTO orderDetailDTO,
@@ -90,6 +95,7 @@ public class OrderDetailController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<String> deleteOrderDetail(
             @Valid @PathVariable Long id
     ) {

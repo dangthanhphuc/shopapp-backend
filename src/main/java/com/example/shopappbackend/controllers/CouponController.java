@@ -3,11 +3,11 @@ package com.example.shopappbackend.controllers;
 import com.example.shopappbackend.dtos.CouponDTO;
 import com.example.shopappbackend.entities.Coupon;
 import com.example.shopappbackend.repositories.CouponRepository;
-import com.example.shopappbackend.responses.test.Response;
 import com.example.shopappbackend.services.coupon.ICouponService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
