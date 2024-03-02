@@ -43,7 +43,7 @@ public class UserController {
         }
     }
 
-    @PostMapping("")
+    @PostMapping("/register")
     public ResponseEntity<?> createUser(
             @Valid @RequestBody UserDTO userDTO,
             BindingResult result
@@ -98,7 +98,6 @@ public class UserController {
         }
     }
 
-    // Test
     @PostMapping("/login")
     public ResponseEntity<?> login(
             @Valid @RequestBody UserLoginDTO userLoginDTO,
@@ -123,14 +122,39 @@ public class UserController {
                     .message("Login successful")
                     .token(jwtToken.getToken())
                     .tokenType(jwtToken.getTokenType())
+                    .refreshToken(jwtToken.getRefreshToken())
                     .id(userDetails.getId())
                     .username(userDetails.getUsername())
                     .roles(userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList())
                     .build();
             return ResponseEntity.ok().body(loginResponse);
         } catch (Exception e) {
-
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    @PostMapping("/refreshToken/{refreshToken}")
+    public ResponseEntity<?> refreshToken(
+            @Valid @PathVariable String refreshToken
+    ){
+        try {
+            User userDetails = userService.getUserDetailsFromRefreshToken(refreshToken);
+            Token jwtToken = tokenService.refreshToken(refreshToken, userDetails);
+            LoginResponse loginResponse = LoginResponse.builder()
+                    .message("Refresh token successful")
+                    .token(jwtToken.getToken())
+                    .tokenType(jwtToken.getTokenType())
+                    .refreshToken(jwtToken.getRefreshToken())
+                    .id(userDetails.getId())
+                    .username(userDetails.getUsername())
+                    .roles(userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList())
+                    .build();
+
+            return ResponseEntity.ok().body(loginResponse);
+        } catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
+
     }
 }

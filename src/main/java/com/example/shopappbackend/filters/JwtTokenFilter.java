@@ -7,6 +7,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotNull;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.internal.Pair;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,9 +36,9 @@ public class JwtTokenFilter extends OncePerRequestFilter { // Dùng để kiểm
 
     @Override
     protected void doFilterInternal(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            FilterChain filterChain) throws ServletException, IOException
+            @NonNull HttpServletRequest request,
+            @NonNull HttpServletResponse response,
+            @NonNull FilterChain filterChain) throws ServletException, IOException
     {
         try{
             if(isByPassToken(request)){
@@ -89,17 +90,22 @@ public class JwtTokenFilter extends OncePerRequestFilter { // Dùng để kiểm
     private boolean isByPassToken(@NotNull HttpServletRequest request) {
         List<Pair<String, String>> byPassToken = Arrays.asList(
                 Pair.of(String.format("%s/categories**", apiPrefix),"GET"),
+
+                Pair.of(String.format("%s/comments", apiPrefix),"GET"),
+
+                Pair.of(String.format("%s/coupons/calculateCoupon", apiPrefix),"GET"),
+
                 Pair.of(String.format("%s/materials**", apiPrefix),"GET"),
-                Pair.of(String.format("%s/comments**", apiPrefix),"GET"),
 
-                Pair.of(String.format("%s/get-order-by-keywords", apiPrefix),"GET"),
+                Pair.of(String.format("%s/orders/get-order-by-keywords", apiPrefix),"GET"),
+
+                Pair.of(String.format("%s/products**", apiPrefix),"GET"),
+
                 Pair.of(String.format("%s/users/register", apiPrefix),"POST"),
-                Pair.of(String.format("%s/users/login", apiPrefix),"GET")
+                Pair.of(String.format("%s/users/login", apiPrefix),"POST"),
+                Pair.of(String.format("%s/users/refreshToken**", apiPrefix),"POST")
 
-                ,Pair.of(String.format("%s/users**", apiPrefix),"POST"),
-                Pair.of(String.format("%s/products/image**", apiPrefix),"GET"),
-                Pair.of(String.format("%s/orders**", apiPrefix),"POST"),
-                Pair.of(String.format("%s/orders**", apiPrefix), "PUT")
+
         );
 
         for (Pair<String, String>  pair : byPassToken) {

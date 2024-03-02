@@ -3,9 +3,11 @@ package com.example.shopappbackend.services.user;
 import com.example.shopappbackend.components.JwtTokenUtils;
 import com.example.shopappbackend.dtos.UserDTO;
 import com.example.shopappbackend.entities.Role;
+import com.example.shopappbackend.entities.Token;
 import com.example.shopappbackend.entities.User;
 import com.example.shopappbackend.exceptions.DataNotFoundException;
 import com.example.shopappbackend.repositories.RoleRepository;
+import com.example.shopappbackend.repositories.TokenRepository;
 import com.example.shopappbackend.repositories.UserRepository;
 import com.example.shopappbackend.services.role.IRoleService;
 import com.example.shopappbackend.services.role.RoleService;
@@ -31,6 +33,7 @@ public class UserService implements IUserService {
     private final JwtTokenUtils jwtTokenUtil;
 
     private final ModelMapper modelMapper;
+    private final TokenRepository tokenRepository;
 
     @Override
     public List<User> getUsers() throws DataNotFoundException {
@@ -110,6 +113,13 @@ public class UserService implements IUserService {
                         () -> new DataNotFoundException("User not found")
                 );
         return existingUser;
+    }
+
+    @Override
+    public User getUserDetailsFromRefreshToken(String refreshToken) throws DataNotFoundException {
+        Token existingToken = tokenRepository.findByRefreshToken(refreshToken)
+                .orElseThrow(() -> new DataNotFoundException("Refresh token not found"));
+        return getUserDetailsFromToken(existingToken.getToken());
     }
 
     @Override

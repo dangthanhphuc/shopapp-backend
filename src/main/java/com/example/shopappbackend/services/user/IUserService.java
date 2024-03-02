@@ -14,4 +14,5 @@ public interface IUserService {
     User getUser(Long userId) throws DataNotFoundException;
     String login(String email, String password) throws DataNotFoundException;
     User getUserDetailsFromToken(String token) throws DataNotFoundException;
+    User getUserDetailsFromRefreshToken(String refreshToken) throws DataNotFoundException;
 }

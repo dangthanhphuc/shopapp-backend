@@ -69,7 +69,7 @@ public class ProductController {
     }
 
     @PostMapping("")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> createProduct (
             @Valid @RequestBody ProductDTO productDTO,
             BindingResult result
@@ -121,7 +121,7 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> updateProduct(
             @PathVariable("id") Long productId,
             @Valid @RequestBody ProductDTO productDTO,

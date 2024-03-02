@@ -24,6 +24,12 @@ public class Token {
     @Column(name = "token_type", length = 50)
     private String tokenType;
 
+    @Column(name = "refresh_token")
+    private String refreshToken;
+
+    @Column(name = "refresh_token_expiration_date")
+    private LocalDateTime refreshTokenExpirationDate;
+
     @Column(name = "is_mobile")
     private boolean isMobile;
 

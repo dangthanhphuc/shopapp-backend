@@ -18,7 +18,7 @@ import java.util.List;
 public class CouponController {
     private final ICouponService couponService;
 
-    @GetMapping("/calculate")
+    @GetMapping("/calculateCoupon")
     public ResponseEntity<?> calculateCouponValue(
             @RequestParam String couponCode,
             @RequestParam double totalAmount

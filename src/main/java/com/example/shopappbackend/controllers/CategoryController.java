@@ -84,7 +84,6 @@ public class CategoryController {
     }
 
     @GetMapping("")
-    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<List<Category>> getAllCategories(
     ) {
         List<Category> categories = categoryService.getAllCategories();

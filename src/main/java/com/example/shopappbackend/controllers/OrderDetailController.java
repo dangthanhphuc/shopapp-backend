@@ -95,7 +95,7 @@ public class OrderDetailController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     public ResponseEntity<String> deleteOrderDetail(
             @Valid @PathVariable Long id
     ) {
