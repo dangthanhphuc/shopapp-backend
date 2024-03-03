@@ -2,6 +2,8 @@ package com.example.shopappbackend.controllers;
 
 import com.example.shopappbackend.dtos.OrderDTO;
 import com.example.shopappbackend.entities.Order;
+import com.example.shopappbackend.exceptions.DataNotFoundException;
+import com.example.shopappbackend.responses.ResponseObject;
 import com.example.shopappbackend.responses.order.OrderListResponse;
 import com.example.shopappbackend.responses.order.OrderResponse;
 import com.example.shopappbackend.services.order.IOrderService;
@@ -10,12 +12,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -26,44 +30,74 @@ public class OrderController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
-    public ResponseEntity<?> getOrderById(@PathVariable Long id){
-        try {
+    public ResponseEntity<ResponseObject> getOrderById(
+            @PathVariable Long id
+    ) throws DataNotFoundException {
+
             Order order = orderService.getOrderById(id);
-            return ResponseEntity.ok(OrderResponse.fromOrder(order));
-        }catch (Exception e){
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+            return ResponseEntity.ok().body(
+                    ResponseObject.builder()
+                            .timeStamp(LocalDateTime.now())
+                            .message("Successfully get order by id !")
+                            .status(HttpStatus.OK)
+                            .statusCode(HttpStatus.OK.value())
+                            .data(OrderResponse.fromOrder(order))
+                            .build()
+            );
+
     }
 
     @GetMapping("/user/{user_id}")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
-    public ResponseEntity<?> getOrdersByUserId(@PathVariable("user_id") Long id){
-        try {
-            List<Order> ordersByUserId = orderService.getOrdersByUserId(id);
-            return ResponseEntity.ok(ordersByUserId.stream().map(OrderResponse::fromOrder));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<?> getOrdersByUserId(
+            @PathVariable("user_id") Long id
+    ) throws DataNotFoundException {
+
+        List<Order> ordersByUserId = orderService.getOrdersByUserId(id);
+        return ResponseEntity.ok().body(
+                ResponseObject.builder()
+                        .timeStamp(LocalDateTime.now())
+                        .message("Successfully get orders !")
+                        .status(HttpStatus.OK)
+                        .statusCode(HttpStatus.OK.value())
+                        .data(ordersByUserId.stream().map(OrderResponse::fromOrder).toList())
+                        .build()
+        );
+
     }
 
     @PostMapping("")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
-    public ResponseEntity<?> createOrder(
+    public ResponseEntity<ResponseObject> createOrder(
             @Valid @RequestBody OrderDTO orderDTO,
             BindingResult result
-    ){
-        try {
-            if(result.hasErrors()) {
-                List<String> errors = result.getFieldErrors().stream()
-                        .map(FieldError::getDefaultMessage)
-                        .toList();
-                return ResponseEntity.badRequest().body(errors);
-            }
-            Order order = orderService.createOrder(orderDTO);
-            return ResponseEntity.ok(OrderResponse.fromOrder(order));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+    ) throws DataNotFoundException {
+
+        if (result.hasErrors()) {
+            List<String> errors = result.getFieldErrors().stream()
+                    .map(FieldError::getDefaultMessage)
+                    .toList();
+            return ResponseEntity.ok().body(
+                    ResponseObject.builder()
+                            .timeStamp(LocalDateTime.now())
+                            .message("Input is invalid !")
+                            .status(HttpStatus.BAD_REQUEST)
+                            .statusCode(HttpStatus.BAD_REQUEST.value())
+                            .data(errors)
+                            .build()
+            );
         }
+        Order order = orderService.createOrder(orderDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                ResponseObject.builder()
+                        .timeStamp(LocalDateTime.now())
+                        .message("Successfully create order !")
+                        .status(HttpStatus.CREATED)
+                        .statusCode(HttpStatus.CREATED.value())
+                        .data(OrderResponse.fromOrder(order))
+                        .build()
+        );
+
     }
 
     @PutMapping("/{id}")
@@ -72,8 +106,8 @@ public class OrderController {
             @Valid @PathVariable Long id,
             @Valid @RequestBody OrderDTO orderDTO,
             BindingResult result
-    ){
-        try {
+    ) throws DataNotFoundException {
+
             if(result.hasErrors()) {
                 List<String> errors = result.getFieldErrors().stream()
                         .map(FieldError::getDefaultMessage)
@@ -81,21 +115,31 @@ public class OrderController {
                 return ResponseEntity.badRequest().body(errors);
             }
             Order updatedOrder = orderService.updateOrder(id, orderDTO);
-            return ResponseEntity.ok().body(OrderResponse.fromOrder(updatedOrder));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        return ResponseEntity.ok().body(
+                ResponseObject.builder()
+                        .timeStamp(LocalDateTime.now())
+                        .message("Successfully updated order !")
+                        .status(HttpStatus.OK)
+                        .statusCode(HttpStatus.OK.value())
+                        .data(OrderResponse.fromOrder(updatedOrder))
+                        .build()
+        );
+
     }
 
     @PostMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
-    public ResponseEntity<String> deleteOrderById(@PathVariable("id") Long orderId){
-        try {
-            orderService.deleteOrder(orderId);
-            return ResponseEntity.ok("Deleted order by id " + orderId + " successfully");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<ResponseObject> deleteOrderById(@PathVariable("id") Long orderId) throws DataNotFoundException {
+
+        orderService.deleteOrder(orderId);
+        return ResponseEntity.ok().body(
+                ResponseObject.builder()
+                        .timeStamp(LocalDateTime.now())
+                        .message("Successfully deleted order !")
+                        .status(HttpStatus.OK)
+                        .statusCode(HttpStatus.OK.value())
+                        .build()
+        );
     }
 
     @GetMapping("/get-order-by-keywords")

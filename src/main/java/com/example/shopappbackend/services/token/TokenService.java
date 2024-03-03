@@ -47,15 +47,14 @@ public class TokenService implements ITokenService{
             }
         }
 
-        LocalDateTime expirationDate = LocalDateTime.now().plusSeconds(expiration);
         Token newToken = Token.builder()
                 .token(token)
+                .expirationDate(LocalDateTime.now().plusSeconds(expiration))
                 .tokenType("Bearer")
                 .refreshToken(UUID.randomUUID().toString())
-                .expirationDate(LocalDateTime.now().plusSeconds(expirationRefreshToken))
+                .refreshTokenExpirationDate(LocalDateTime.now().plusSeconds(expirationRefreshToken))
                 .revoked(false)
                 .expired(false)
-                .expirationDate(expirationDate)
                 .user(user)
                 .build();
 
@@ -67,7 +66,7 @@ public class TokenService implements ITokenService{
         Token existingToken = tokenRepository.findByRefreshToken(refreshToken)
                 .orElseThrow(() -> new DataNotFoundException("Refresh token not found"));
 
-        if(existingToken.getExpirationDate().isBefore(LocalDateTime.now())){
+        if(existingToken.getRefreshTokenExpirationDate().isBefore(LocalDateTime.now())){
             throw new ExpiredTokenException("Refresh token expired");
         }
 

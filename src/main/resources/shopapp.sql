@@ -37,7 +37,7 @@ insert into products (category_id,material_id,updated_at,created_at,is_deleted,n
 values (5,1,'1000-12-20 14:30:00','2023-1-20 14:30:00',false,'product 7',7.1,'description 7'); 
 
 insert into users (updated_at,created_at,is_deleted,email,password,full_name,address,phone_number,role_id)
-values ('1000-12-20 14:30:00','2023-12-20 14:30:00',false,"phucdang1@gmail.com","password1","name1","address1","15325152",1);
+values ('1000-12-20 14:30:00','2023-12-20 14:30:00',false,"phucdang01235@gmail.com",'$2a$10$6u8Ca6/omfOhkqOGg6ScH.NVwtTmKq3ROhCUvAGaWtUODJ9Na.5/2',"name1","address1","15325152",1);
 insert into users (updated_at,created_at,is_deleted,email,password,full_name,address,phone_number,role_id)
 values ('1000-12-20 14:30:00','2023-12-20 14:30:00',false,"phucdang2@gmail.com","password1","name2","address1","15325152",2);
 insert into users (updated_at,created_at,is_deleted,email,password,full_name,address,phone_number,role_id)
