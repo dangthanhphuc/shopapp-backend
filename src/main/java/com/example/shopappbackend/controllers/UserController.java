@@ -7,6 +7,7 @@ import com.example.shopappbackend.entities.Token;
 import com.example.shopappbackend.entities.User;
 import com.example.shopappbackend.exceptions.DataNotFoundException;
 import com.example.shopappbackend.exceptions.ExpiredTokenException;
+import com.example.shopappbackend.exceptions.InvalidPasswordException;
 import com.example.shopappbackend.responses.ResponseObject;
 import com.example.shopappbackend.responses.user.LoginResponse;
 import com.example.shopappbackend.responses.user.UserResponse;
@@ -20,6 +21,7 @@ import lombok.SneakyThrows;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -38,6 +40,7 @@ public class UserController {
     private final ITokenService tokenService;
 
     @GetMapping("")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<ResponseObject> getAllUsers() throws DataNotFoundException {
 
         List<UserResponse> userResponses = userService.getUsers().stream()
@@ -59,7 +62,7 @@ public class UserController {
     public ResponseEntity<?> createUser(
             @Valid @RequestBody UserDTO userDTO,
             BindingResult result
-    ) throws DataNotFoundException {
+    ) throws DataNotFoundException, InvalidPasswordException {
         if (result.hasErrors()) {
             Map<String, String> errors = result.getFieldErrors().stream()
                     .filter(error -> error.getDefaultMessage() != null)
@@ -219,4 +222,23 @@ public class UserController {
                         .build()
         );
     }
+
+    @PutMapping("/resetPassword/{userId}/{newPassword}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') OR hasRole('ROLE_USER')")
+    public ResponseEntity<ResponseObject> resetPassword(
+            @Valid @PathVariable("userId") Long userId,
+            @Valid @PathVariable("newPassword") String newPassword
+    ) throws DataNotFoundException {
+        userService.resetPassword(userId, newPassword);
+        return ResponseEntity.ok() .body(
+                ResponseObject.builder()
+                        .timeStamp(LocalDateTime.now())
+                        .message("Reset password successful")
+                        .status(HttpStatus.OK)
+                        .statusCode(HttpStatus.OK.value())
+                        .build()
+        );
+    }
+
+
 }

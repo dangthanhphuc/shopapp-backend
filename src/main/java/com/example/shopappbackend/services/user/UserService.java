@@ -6,6 +6,7 @@ import com.example.shopappbackend.entities.Role;
 import com.example.shopappbackend.entities.Token;
 import com.example.shopappbackend.entities.User;
 import com.example.shopappbackend.exceptions.DataNotFoundException;
+import com.example.shopappbackend.exceptions.InvalidPasswordException;
 import com.example.shopappbackend.repositories.RoleRepository;
 import com.example.shopappbackend.repositories.TokenRepository;
 import com.example.shopappbackend.repositories.UserRepository;
@@ -45,10 +46,14 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public User createUser(UserDTO userDTO) throws DataNotFoundException {
+    public User createUser(UserDTO userDTO) throws DataNotFoundException, InvalidPasswordException {
 
         if(userRepository.existsByEmail(userDTO.getEmail())){
             throw new DataIntegrityViolationException("User gmail already exists");
+        }
+
+        if(!userDTO.getRetypePassword().equals(userDTO.getPassword())){
+            throw new InvalidPasswordException("Password and retype password not match");
         }
 
         User newUser = new User();
@@ -127,6 +132,20 @@ public class UserService implements IUserService {
         return getUserById(userId);
     }
 
+    @Override
+    public void resetPassword(Long userId ,String newPassword) throws DataNotFoundException {
+        User existingUser = getUserById(userId);
+
+        String passwordEncoded = passwordEncoder.encode(newPassword);
+        existingUser.setPassword(passwordEncoded);
+        userRepository.save(existingUser);
+
+        // Reset password => delete all token by User
+        List<Token> tokens = tokenRepository.findByUserId(userId);
+        for(Token token : tokens) {
+            tokenRepository.delete(token);
+        }
+    }
 
     public User getUserById(long id) throws DataNotFoundException {
         return userRepository.findById(id).stream()

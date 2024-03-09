@@ -24,6 +24,9 @@ public class UserDTO {
     @NotEmpty(message = "The password is required")
     private String password;
 
+    @JsonProperty("retype_password")
+    private String retypePassword;
+
     @JsonProperty("full_name")
     @NotEmpty(message = "User name is required")
     private String fullname;

@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity<ResponseObject> handleGeneralException(Exception ex){
         return ResponseEntity.internalServerError().body(
                 ResponseObject.builder()
@@ -27,7 +26,6 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(DataNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<ResponseObject> handleDataNotFoundException(DataNotFoundException ex){
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                 ResponseObject.builder()
@@ -39,18 +37,28 @@ public class GlobalExceptionHandler {
         );
     }
 
-//    @ExceptionHandler(ExpiredTokenException.class)
-//    @ResponseStatus(HttpStatus.BAD_REQUEST)
-//    public ResponseEntity<ResponseObject> handleExpiredTokenException(ExpiredTokenException ex){
-//        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-//                ResponseObject.builder()
-//                        .timeStamp(LocalDateTime.now())
-//                        .message(ex.getMessage())
-//                        .status(HttpStatus.BAD_REQUEST)
-//                        .statusCode(HttpStatus.BAD_REQUEST.value())
-//                        .build()
-//        );
-//    }
+    @ExceptionHandler(ExpiredTokenException.class)
+    public ResponseEntity<ResponseObject> handleExpiredTokenException(ExpiredTokenException ex){
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                ResponseObject.builder()
+                        .timeStamp(LocalDateTime.now())
+                        .message(ex.getMessage())
+                        .status(HttpStatus.BAD_REQUEST)
+                        .statusCode(HttpStatus.BAD_REQUEST.value())
+                        .build()
+        );
+    }
 
+    @ExceptionHandler(InvalidPasswordException.class)
+    public ResponseEntity<ResponseObject> handleInvalidPasswordException(InvalidPasswordException ex){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                ResponseObject.builder()
+                        .timeStamp(LocalDateTime.now())
+                        .message(ex.getMessage())
+                        .status(HttpStatus.BAD_REQUEST)
+                        .statusCode(HttpStatus.BAD_REQUEST.value())
+                        .build()
+        );
+    }
 
 }

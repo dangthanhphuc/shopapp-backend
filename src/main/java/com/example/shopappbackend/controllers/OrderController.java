@@ -127,7 +127,7 @@ public class OrderController {
 
     }
 
-    @PostMapping("/{id}")
+    @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     public ResponseEntity<ResponseObject> deleteOrderById(@PathVariable("id") Long orderId) throws DataNotFoundException {
 
